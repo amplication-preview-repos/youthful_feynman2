@@ -1,0 +1,64 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model LicenseAgreement {
+  createdAt   DateTime   @default(now())
+  developer   Developer? @relation(fields: [developerId], references: [id])
+  developerId String?
+  endDate     DateTime?
+  id          String     @id @default(cuid())
+  startDate   DateTime?
+  terms       String?
+  track       String?
+  updatedAt   DateTime   @updatedAt
+}
+
+model MusicTrack {
+  artist            String?
+  createdAt         DateTime @default(now())
+  externalCatalogId String?
+  genre             String?
+  id                String   @id @default(cuid())
+  metadata          Json?
+  mood              String?
+  title             String?
+  updatedAt         DateTime @updatedAt
+}
+
+model ContentPublisher {
+  catalogEndpoint String?
+  createdAt       DateTime @default(now())
+  email           String?
+  id              String   @id @default(cuid())
+  name            String?
+  updatedAt       DateTime @updatedAt
+}
+
+model ApiUsage {
+  createdAt        DateTime   @default(now())
+  developer        Developer? @relation(fields: [developerId], references: [id])
+  developerId      String?
+  endpoint         String?
+  id               String     @id @default(cuid())
+  requestTimestamp DateTime?
+  responseStatus   String?
+  updatedAt        DateTime   @updatedAt
+}
+
+model Developer {
+  apiKey            String?
+  apiUsages         ApiUsage[]
+  createdAt         DateTime           @default(now())
+  email             String?
+  id                String             @id @default(cuid())
+  licenseAgreements LicenseAgreement[]
+  name              String?
+  subscriptionPlan  String?
+  updatedAt         DateTime           @updatedAt
+}
